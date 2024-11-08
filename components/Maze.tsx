@@ -2,10 +2,13 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 interface MazeProps {
-  maze: number[][];
+  maze: number[][];  
+  cellSize: number;  
+  solutionPath: { x: number; y: number }[]; 
+  destination: { x: number; y: number }; 
 }
 
-const Maze: React.FC<MazeProps> = ({ maze }) => {
+const Maze: React.FC<MazeProps> = ({ maze, cellSize, solutionPath, destination }) => {
   return (
     <View style={styles.container}>
       {maze.map((row, rowIndex) => (
@@ -15,7 +18,14 @@ const Maze: React.FC<MazeProps> = ({ maze }) => {
               key={cellIndex}
               style={[
                 styles.cell,
+                { width: cellSize, height: cellSize },
                 cell === 1 ? styles.wall : styles.path,
+                solutionPath.some(pos => pos.x === cellIndex && pos.y === rowIndex)
+                  ? styles.solution
+                  : {},
+                destination.x === cellIndex && destination.y === rowIndex
+                  ? styles.destination
+                  : {},
               ]}
             />
           ))}
@@ -27,24 +37,28 @@ const Maze: React.FC<MazeProps> = ({ maze }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   row: {
     flexDirection: 'row',
   },
   cell: {
-    width: 20,
-    height: 20,
-  },
-  wall: {
-    backgroundColor: '#333',
     borderWidth: 1,
     borderColor: '#000',
   },
+  wall: {
+    backgroundColor: '#333',
+  },
   path: {
     backgroundColor: '#fff',
+  },
+  solution: {
+    backgroundColor: 'yellow', 
+  },
+  destination: {
+    backgroundColor: 'green', 
   },
 });
 
