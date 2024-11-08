@@ -2,63 +2,56 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 interface MazeProps {
-  maze: number[][];  
-  cellSize: number;  
+  maze: number[][]; 
+  cellSize: number; 
   solutionPath: { x: number; y: number }[]; 
   destination: { x: number; y: number }; 
 }
 
 const Maze: React.FC<MazeProps> = ({ maze, cellSize, solutionPath, destination }) => {
   return (
-    <View style={styles.container}>
-      {maze.map((row, rowIndex) => (
-        <View key={rowIndex} style={styles.row}>
-          {row.map((cell, cellIndex) => (
+    <View style={styles.mazeContainer}>
+      {maze.map((row, rowIndex) =>
+        row.map((cell, colIndex) => {
+          const isWall = cell === 1; 
+          const isSolution = solutionPath.some(path => path.x === colIndex && path.y === rowIndex);
+          const isDestination = destination.x === colIndex && destination.y === rowIndex;
+
+          return (
             <View
-              key={cellIndex}
+              key={`${rowIndex}-${colIndex}`}
               style={[
                 styles.cell,
-                { width: cellSize, height: cellSize },
-                cell === 1 ? styles.wall : styles.path,
-                solutionPath.some(pos => pos.x === cellIndex && pos.y === rowIndex)
-                  ? styles.solution
-                  : {},
-                destination.x === cellIndex && destination.y === rowIndex
-                  ? styles.destination
-                  : {},
+                {
+                  width: cellSize,
+                  height: cellSize,
+                  backgroundColor: isWall
+                    ? '#000' 
+                    : isSolution
+                    ? '#ff0' 
+                    : isDestination
+                    ? '#f00' 
+                    : '#fff', 
+                  borderWidth: 0, 
+                },
               ]}
             />
-          ))}
-        </View>
-      ))}
+          );
+        })
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  row: {
+  mazeContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
   },
   cell: {
-    borderWidth: 1,
-    borderColor: '#000',
-  },
-  wall: {
-    backgroundColor: '#333',
-  },
-  path: {
-    backgroundColor: '#fff',
-  },
-  solution: {
-    backgroundColor: 'yellow', 
-  },
-  destination: {
-    backgroundColor: 'green', 
+    margin: 0,
+    padding: 0,
   },
 });
 

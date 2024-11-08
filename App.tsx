@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Button, Text, ImageBackground, Dimensions, Alert } from 'react-native';
+import { FontAwesome } from 'react-native-vector-icons'; 
 import Maze from './components/Maze';
 import Player from './components/Player';
 
@@ -79,11 +80,11 @@ const App: React.FC = () => {
   const [solutionPath, setSolutionPath] = useState<{ x: number; y: number }[]>([]);
   const [destination] = useState<{ x: number; y: number }>({ x: MAZE_SIZE - 2, y: MAZE_SIZE - 2 });
   const [moves, setMoves] = useState<{ x: number; y: number }[]>([]);
-  const [gameStart, setGameStart] = useState<boolean>(false); 
-  const [timeElapsed, setTimeElapsed] = useState<number>(0); 
-  const [score, setScore] = useState<number>(100); 
+  const [gameStart, setGameStart] = useState<boolean>(false); // Track game start
+  const [timeElapsed, setTimeElapsed] = useState<number>(0); // Timer
+  const [score, setScore] = useState<number>(100); // Starting score
 
-  
+  // Generate maze only once when the app is loaded
   useEffect(() => {
     const newMaze = generateMaze(MAZE_SIZE, MAZE_SIZE);
     setMaze(newMaze);
@@ -118,7 +119,7 @@ const App: React.FC = () => {
       setPlayerPosition({ x: newX, y: newY });
       setMoves([...moves, { x: newX, y: newY }]);
 
-      
+    
       if (!gameStart) {
         setGameStart(true); 
       }
@@ -183,13 +184,21 @@ const App: React.FC = () => {
           <Player position={playerPosition} cellSize={CELL_SIZE} />
         </View>
         <View style={styles.controls}>
-          <Button title="Up" onPress={() => movePlayer(0, -1)} />
-          <Button title="Down" onPress={() => movePlayer(0, 1)} />
-          <Button title="Left" onPress={() => movePlayer(-1, 0)} />
-          <Button title="Right" onPress={() => movePlayer(1, 0)} />
-          <Button title="Undo" onPress={undoMove} />
-          <Button title="Highlight Solution" onPress={highlightSolution} />
-          <Button title="Reset" onPress={resetMaze} />
+          <View style={styles.row}>
+            <FontAwesome name="arrow-up" size={40} color="#fff" onPress={() => movePlayer(0, -1)} style={styles.iconButton} />
+          </View>
+          <View style={styles.row}>
+            <FontAwesome name="arrow-left" size={40} color="#fff" onPress={() => movePlayer(-1, 0)} style={styles.iconButton} />
+            <FontAwesome name="arrow-right" size={40} color="#fff" onPress={() => movePlayer(1, 0)} style={styles.iconButton} />
+          </View>
+          <View style={styles.row}>
+            <FontAwesome name="arrow-down" size={40} color="#fff" onPress={() => movePlayer(0, 1)} style={styles.iconButton} />
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button title="Undo" onPress={undoMove} style={styles.button} />
+          <Button title="Highlight Solution" onPress={highlightSolution} style={styles.button} />
+          <Button title="Reset" onPress={resetMaze} style={styles.button} />
         </View>
       </View>
     </ImageBackground>
@@ -234,6 +243,30 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     width: '80%',
+    marginTop: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  iconButton: {
+    margin: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
+  },
+  button: {
+    marginHorizontal: 10,
+    padding: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    minWidth: 100,
+    textAlign: 'center',
+    color: '#fff',
   },
 });
 
